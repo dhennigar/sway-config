@@ -1,0 +1,14 @@
+profile mobile {
+	output eDP-1 enable scale 1.2
+}
+
+profile ubc-office {
+	output eDP-1 enable position 0,0 scale 1.2
+	output 'Dell Inc. DELL E2417H T4KPW9A52C6L' enable position 1600,0
+}
+
+profile home-office {
+	output eDP-1 enable position 0,0 scale 1.2
+	output DP-5 enable position 1600,0
+}
+

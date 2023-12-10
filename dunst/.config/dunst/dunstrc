@@ -1,0 +1,33 @@
+[global]
+font = "Monospace 10"
+icon_theme = "Papirus"
+
+origin = top-right
+offset = 10x10
+
+width = (0, 300)
+
+frame_color = "#e0e0e0"
+frame_width = 2
+separator_color = auto
+
+corner_radius = 10
+
+browser = firefox
+
+[urgency_low]
+    background = "#FFFFFF"
+    foreground = "#000000"
+    timeout = 10
+
+[urgency_normal]
+    background = "#FFFFFF"
+    foreground = "#000000"
+    timeout = 10
+
+[urgency_critical]
+    background = "#ff0000"
+    foreground = "#ffffff"
+    frame_color = "#ff0000"
+    timeout = 0
+

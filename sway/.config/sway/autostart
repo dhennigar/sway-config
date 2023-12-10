@@ -1,0 +1,11 @@
+# ~/.config/sway/autostart
+
+# processes to start on login
+
+exec polkit-dumb-agent
+exec kanshi
+exec dunst
+exec batsignal
+exec gammastep
+exec autotiling
+exec ydotoold

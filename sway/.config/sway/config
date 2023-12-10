@@ -1,0 +1,259 @@
+# ~/.config/sway/config
+
+include /etc/sway/config.d/*
+include ~/.config/sway/config.d/*
+include ~/.config/sway/autostart
+
+
+## General
+
+xwayland enable
+focus_follows_mouse yes
+mouse_warping output
+
+
+## Outputs
+
+set $laptop eDP-1
+output * bg "~/.config/sway/wallpaper.jpg" fill
+# output "eDP-1" scale 1.20
+# output "DP-5" scale 1.0
+bindswitch --reload --locked lid:on output $laptop disable
+bindswitch --reload --locked lid:off output $laptop enable
+exec_always ~/.config/sway/scripts/clam-shell.sh
+
+
+## Inputs
+
+input type:keyboard {
+	repeat_delay 190
+	repeat_rate 30
+}
+input type:touchpad {
+	dwt enabled
+	tap enabled
+	scroll_method two_finger
+	natural_scroll enabled
+	tap_button_map lrm
+	pointer_accel 0.5
+}
+
+input "2:10:TPPS/2_Elan_TrackPoint" {
+	dwt enabled
+	dwtp enabled
+	click_method clickfinger
+	natural_scroll disabled
+	pointer_accel 0.3
+	scroll_method on_button_down
+	scroll_button button2
+}
+
+# primary_selection disable # only available in sway-git
+
+
+## Idle
+
+set $lock "waylock -fork-on-lock -init-color 0x000550 -input-color 0x005005 -fail-color 0x990000"
+exec swayidle -w \
+         timeout 1200 $lock \
+         timeout 1320 'swaymsg "output * power off"' \
+	 resume 'swaymsg "output * power on"' \
+         before-sleep $lock
+exec_always ~/.config/sway/scripts/clam-shell.sh
+
+
+## Keybindings
+
+set $bind bindsym --no-repeat
+
+$bind Mod1+F4 kill
+$bind F9 reload
+$bind F10 floating toggle
+$bind F11 fullscreen
+$bind F12 exec "mark-recapture.py"
+$bind Shift+F12 exec "mark-recapture.py -b"
+$bind Mod1+F12 exec "mark-recapture.py -n"
+
+$bind Mod1+Tab workspace next_on_output
+$bind Mod1+Shift+Tab exec "cycle-focus.py"
+$bind Ctrl+Mod1+Tab exec "new-workspace.py"
+$bind Ctrl+Mod1+Shift+Tab exec "new-workspace.py -s"
+
+$bind Mod1+z exec bemenu-run
+
+$bind Ctrl+z mode "prefix"
+mode "prefix" {
+
+     $bind Ctrl+c kill; mode "default"
+
+     $bind t exec foot; mode "default"
+     $bind Ctrl+t exec foot; mode "default"
+
+     $bind a exec clock.sh; mode "default"
+     $bind b exec battery.sh; mode "default"
+
+     $bind f exec ft; mode "default"
+     $bind v exec w11; mode "default"
+
+     $bind e exec "run-or-raise.py emacs"; mode "default"
+     $bind Ctrl+e exec "run-or-raise.py -b emacs"; mode "default"
+
+     $bind w exec "run-or-raise.py firefox"; mode "default"   
+     $bind Ctrl+w exec "run-or-raise.py -b firefox"; mode "default"
+
+     $bind m exec "mark-recapture.py"; mode "default"
+     $bind Ctrl+m exec "mark-recapture.py -n"; mode "default"
+     $bind Mod1+m exec "mark-recapture.py -n"; mode "default"
+     $bind Shift+m exec "mark-recapture.py -b"; mode "default"
+
+     $bind o exec "cycle-focus.py"; mode "default"
+     $bind Shift+o focus output right
+
+     $bind Left focus left; mode "default"
+     $bind Right focus right; mode "default"
+     $bind Up focus up; mode "default"
+     $bind Down focus down; mode "default"
+
+     $bind Shift+Left move left; mode "default"
+     $bind Shift+Right move right; mode "default"
+     $bind Shift+Up move up; mode "default"
+     $bind Shift+Down move down; mode "default"
+
+     $bind Mod1+Left move to output left
+     $bind Mod1+Right move to output right
+
+     $bind Tab workspace next; mode "default"
+
+     $bind n exec "new-workspace.py"; mode "default"
+     $bind Ctrl+n exec "new-workspace.py"; mode "default"
+     $bind Shift+n exec "new-workspace.py -s"; mode "default"
+
+     $bind BackSpace exec "dunstctl close-all"; mode "default"
+
+     $bind Mod1+t layout tabbed; mode "default"
+     $bind Mod1+s layout stacking; mode "default"
+     $bind Mod1+d layout default; mode "default"
+
+     $bind Ctrl+g mode "default"
+     $bind Escape mode "default"
+
+     $bind Ctrl+z exec sleep 1; mode "default"
+}
+
+
+## Resize Mode
+
+bindsym Ctrl+Mod1+r mode "resize"
+mode "resize" {
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Ctrl+g mode "default"
+}
+
+
+## Relocate Mode
+
+bindsym Ctrl+Mod1+Shift+r mode "relocate"
+mode "relocate" {
+    bindsym Left move left
+    bindsym Right move right
+    bindsym Up move up
+    bindsym Down move down
+    bindsym Ctrl+g mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+
+## Media Keys
+
+bindsym XF86AudioPlay exec "playerctl play"
+bindsym XF86AudioPause exec "playerctl pause"
+bindsym XF86AudioNext exec "playerctl next"
+bindsym XF86AudioPrev exec "playerctl previous"
+bindsym XF86AudioMute exec "pamixer -t"
+bindsym XF86AudioMicMute exec "pamixer --default-source -t"
+bindsym XF86AudioRaiseVolume exec "pamixer -i 5"
+bindsym XF86AudioLowerVolume exec "pamixer -d 5"
+bindsym XF86MonBrightnessUp exec "brightnessctl s +10%"
+bindsym XF86MonBrightnessDown exec "brightnessctl s 10%-"
+bindsym XF86WLAN exec "rfkill block all"
+bindsym XF86Display exec "kanshictl reload"
+
+
+## Mousebindings
+
+floating_modifier Mod1 normal
+bindgesture --exact swipe:4:right exec new-workspace.py
+bindgesture --exact swipe:4:left exec new-workspace.py
+bindgesture --exact swipe:3:right workspace prev
+bindgesture --exact swipe:3:left workspace next
+bindgesture swipe:up exec bemenu-run
+bindgesture swipe:down exec killall bemenu-run
+
+
+## Appearance
+
+# client		     #border   #bg       #text     #indic
+client.focused		     "#3660d0" "#3660d0" "#FFFFFF" "#4670e0"
+client.focused_inactive	     "#999999" "#999999" "#000000" "#999999"
+client.unfocused	     "#888888" "#888888" "#000000" "#888888"
+client.urgent		     "#ff0000" "#ff0000" "#000000" "#ff0000"
+
+# smart_borders on
+default_border pixel 2
+default_floating_border pixel 2
+gaps inner 20
+font "IBM Plex Mono 10"
+
+# --- swayfx only -------------------
+#corner_radius 10
+#shadows enable
+#shadows_on_csd enable
+#shadow_blur_radius 15
+# -----------------------------------
+
+
+## GTK
+
+exec_always {
+	gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
+	gsettings set org.gnome.desktop.interface icon-theme "Papirus"
+	gsettings set org.gnome.desktop.interface font-name "IBM Plex Sans Regular 11"
+	gsettings set org.gnome.desktop.interface text-scaling-factor 1.0
+	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
+	gsettings set org.gnome.desktop.interface cursor-theme-size 24
+	gsettings set org.gnome.desktop.interface gtk-enable-primary-paste false
+}
+seat seat0 xcursor_theme Adwaita 24
+
+## Window Rules
+
+# fullscreen inhibits sleep
+for_window [app_id=".*"] inhibit_idle fullscreen
+for_window [class=".*"] inhibit_idle fullscreen
+# but not for these
+for_window [app_id="emacs"] inhibit_idle none
+
+# steam inhibits idle
+for_window [class="steam_app_2252570"] inhibit_idle open
+
+# place qbit on its own workspace and float the child windows.
+for_window [app_id="org.qbittorrent.qBittorrent"] move to workspace "qbit"
+for_window [app_id="org.qbittorrent.qBittorrent" title="(?!^qBittorrent)^.*$"] floating enable
+
+# floating windows
+for_window [class="R_x11"] floating enable
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="galculator"] floating enable
+for_window [title="^.*\.html" class="Google-chrome"] floating enable
+for_window [title="Save File"] floating enable
+
+
+## Environment
+
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
